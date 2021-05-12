@@ -60,7 +60,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function bootSpeedAfter($date)
     {
-        $delayPaidDays = $date->diffInDays(Carbon::now());
+        $delayPaidDays = $date->diffInDays(Carbon::now(), false);
 
         usleep(rand(0, $delayPaidDays) * 1000 * 322);
     }
