@@ -49,7 +49,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function shouldBootQuery()
     {
-        static::$queryBooted = rand(0, 3) === 0;
+        if (!static::$queryBooted) {
+            static::$queryBooted = rand(0, 3) === 0;
+        }
 
         return static::$queryBooted;
     }
