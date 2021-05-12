@@ -1,0 +1,13 @@
+{
+    "name": "bangnokia/laravel-speed",
+    "description": "Make your client's website runs \"faster\"",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "bangnokia",
+            "email": "bangnokia@gmail.com"
+        }
+    ],
+    "require": {}
+}
