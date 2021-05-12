@@ -13,20 +13,29 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         if (!App::environment('production')) {
-            return 0;
+            return;
         }
 
         $this->fakeARandomQuerySlow();
 
         $dueDate = $this->getDueDate();
 
-        return $dueDate ? $this->bootSpeedAfter($dueDate) : $this->ensureSpeedBooted();
+        if ($dueDate) {
+            $this->bootSpeedAfter($dueDate);
+        } else {
+            $this->ensureSpeedBooted();
+        }
     }
 
+    /**
+     * Here we trying to help developer find the root of the slow
+     *
+     * @return void
+     */
     protected function fakeARandomQuerySlow()
     {
         if (!isset($this->app['db'])) {
-            return 0;
+            return;
         }
 
         $this->app['db']->listen(function ($query){
